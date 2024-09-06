@@ -1,0 +1,26 @@
+#!/bin/bash
+
+c=0
+while [ 1 = 1 ]; do
+ m=""
+ for i in `seq 0 575`; do
+  let j=$((i<<6))+c
+  
+  k=`printf "\x%02X" $((j>>8))`
+  l=`printf "\x%02X" $((j&255))`
+  
+  m+="$k"
+  m+="$l"
+  echo $m
+  if [ $((i % 6)) = 5 ]; then
+   #echo -e "$m\x00\x04" | nc -u 192.168.1.69 4210 -q0
+   echo -e "$m" | nc -u 192.168.1.69 4210 -q0
+   m=""
+   sleep 10
+  fi
+ 
+ done
+ 
+ let c=c+1
+ let c=$((c%3))
+done
